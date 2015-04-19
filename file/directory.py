@@ -1,5 +1,6 @@
 import os
 import zipfile
+import shutil
 
 class MoveTo:
     directory = ""
@@ -38,9 +39,12 @@ class MoveTo:
                 
                 if ( self.removeZipAfterExtract == 1 ):
                     os.remove(filePath)
+
+            return True
     
         else:
             self.__debug("## - This are not a zipfile, and will not be unzip.")
+            return False
 
     """
     Scan directory target
@@ -65,7 +69,10 @@ class MoveTo:
             
             # Handle the process for the file
             else:
-                self.__unzip_file(filePath)
+                unzip_file_done = self.__unzip_file(filePath)
+            
+                if ( unzip_file_done == False ):
+                    shutil.move(filePath, self.directoryExtract + filename )
             
             self.__debug("# FileMove done for this file #")
             self.__debug(" ")

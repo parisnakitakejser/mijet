@@ -4,11 +4,11 @@ import email
 import os
 import imghdr
 
-class build:
-    mailFolder = "INBOX"
-    mailFolderCopyTo = "INOBX/Parsed"
-    localPath = "./tmp"
-    mailFrom = ""
+class Build:
+    mail_folder = "INBOX"
+    mail_folder_copy_to = "INOBX/Parsed"
+    local_path = "./tmp"
+    mail_from = ""
     
     """
     Defined server, username and password 
@@ -25,7 +25,7 @@ class build:
         try:
             self.mailbox = imaplib.IMAP4(self.server)
             self.mailbox.login(self.username, self.password)
-            print self.mailbox.select(self.mailFolder)
+            print self.mailbox.select(self.mail_folder)
             print "-"
         
         except imaplib.IMAP4.error:
@@ -41,18 +41,18 @@ class build:
     """ 
     Get all mailbox loop and handle every mails there are back
     """
-    def __getAllLoop(self):
+    def __get_all_loop(self):
         
-        rv, data = self.mailbox.search(None, 'ALL', '(HEADER FROM "'+ self.mailFrom +'")')
+        rv, data = self.mailbox.search(None, 'ALL', '(HEADER FROM "%s")' % self.mail_from )
         
         if rv != 'OK':
             print("No messages found!")
         
-        mailCount = data[0].split()
-        print "Mail back to handle: "+ str( len(mailCount) )
+        mail_count = data[0].split()
+        print "Mail back to handle: "+ str( len(mail_count) )
         
-        if ( len(mailCount) > 0):
-            num = mailCount[0]
+        if ( len(mail_count) > 0):
+            num = mail_count[0]
             
             print "Mail listID: "+ num
             rv, data = self.mailbox.fetch(num, '(RFC822)')
@@ -63,9 +63,9 @@ class build:
             
             print "["+ str(mail["From"]) +"] :" + str(mail["Subject"])
             
-            self.__saveAttachedFiles(mail)
-            self.__moveMailToParsedFolder(num)
-            self.__getAllLoop()
+            self.__save_attached_files(mail)
+            self.__move_mail_to_parsed_folder(num)
+            self.__get_all_loop()
     
     """
     Get all mailbox messegt 
@@ -73,13 +73,13 @@ class build:
     def run(self):
         
         self.__login()
-        self.__getAllLoop()
+        self.__get_all_loop()
         self.__close()
 
     """
     Save all attached files from mails
     """
-    def __saveAttachedFiles(self,mail):
+    def __save_attached_files(self,mail):
         
         for part in mail.walk():
             if part.get_content_maintype() == 'multipart':
@@ -92,7 +92,7 @@ class build:
             counter = 1
 
             if filename:
-                att_path = os.path.join(self.localPath, str(mail['Message-ID']) +"_"+ filename )
+                att_path = os.path.join(self.local_path, str(mail['Message-ID']) +"_"+ filename )
 
                 if not os.path.isfile(att_path):
                     fp = open(att_path, 'wb')
@@ -102,11 +102,11 @@ class build:
     """
     Move mail messegt to parsed folder after its handle
     """
-    def __moveMailToParsedFolder(self,num):
+    def __move_mail_to_parsed_folder(self,num):
         
         mail_uid = num
         
-        apply_lbl_msg = self.mailbox.copy(mail_uid, self.mailFolderCopyTo)
+        apply_lbl_msg = self.mailbox.copy(mail_uid, self.mail_folder_copy_to)
         print apply_lbl_msg
         
         if apply_lbl_msg[0] == 'OK':

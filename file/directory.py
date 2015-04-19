@@ -1,7 +1,7 @@
 import os
 import zipfile
 
-class moveTo:
+class MoveTo:
     directory = ""
     directoryExtract = ""
     debug = "on"
@@ -17,7 +17,7 @@ class moveTo:
     """
     Remove file from system
     """
-    def __removeFile(self, filePath):
+    def __remove_file(self, filePath):
         
         if ( os.path.isfile(filePath) ):
             os.remove(filePath)
@@ -28,7 +28,7 @@ class moveTo:
     """
     Look up about its a zipfile, if its match as a zipfile, its will extract all to extract directory.
     """
-    def __unzipFile(self, filePath):
+    def __unzip_file(self, filePath):
 
         if ( zipfile.is_zipfile(filePath) == True ):
             self.__debug("## - This is a zipfile, and will try to unzip it.")
@@ -57,7 +57,7 @@ class moveTo:
             # Remove .DS_Store file
             if ( filename.lower() == '.ds_store'):
                 self.__debug("## This is .DS_Store file is a OS X index file, and will be removed.")
-                self.__removeFile(filePath)
+                self.__remove_file(filePath)
         
             # Skip if its a directory
             if ( os.path.isdir(filePath) == True ):
@@ -65,7 +65,7 @@ class moveTo:
             
             # Handle the process for the file
             else:
-                self.__unzipFile(filePath)
+                self.__unzip_file(filePath)
             
             self.__debug("# FileMove done for this file #")
             self.__debug(" ")

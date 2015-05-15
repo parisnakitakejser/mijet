@@ -14,7 +14,7 @@ class File:
 """
     Remove all files insite of this current folder.
     """
-        def remove_all_files_in_folder(self,folder_name):
+    def remove_all_files_in_folder(self,folder_name):
         
         for file in os.listdir( folder_name ):
             pathname = os.path.join(folder_name, file)

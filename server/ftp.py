@@ -81,8 +81,16 @@ class FTP:
             for fname in files:
                 
                 full_fname = os.path.join(root, fname)
-                self.__ftp.storbinary('STOR '+ fname, open(full_fname, 'rb'))
-                self.__debug("# - Upload filename: %s" % fname )
+                
+                try:
+                    self.__ftp.storbinary('STOR '+ fname, open(full_fname, 'rb'))
+                    self.__debug("# - Upload filename: %s" % fname )
+                except ftplib.error_perm, resp:
+                    if str(resp) == "550 No files found":
+                        print "No files in this directory"
+                    else:
+                        raise
+
 
     """
     Create new folder on FTP server
